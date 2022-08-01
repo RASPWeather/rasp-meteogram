@@ -82,15 +82,23 @@ wrf_version = "3.7"
 ; N-S vertical E-W horizontal coordinate system when the grid is tilted from due N-S
  ; ----------------------------------------------------------------------------
 BASEDIR=getenv("BASEDIR")
+print_clock("Using BASEDIR:" +BASEDIR)
 NCARG_ROOT=getenv("NCARG_ROOT")  
+print_clock("Using NCARG_ROOT:" +NCARG_ROOT)
+DOMAIN=getenv("PLOT_DOMAIN")  
+print_clock("Using DOMAIN:" +DOMAIN)
 
+; -------------------------
 ; Options chosen:
-
-show_pfd = 0
+show_pfd = 0         ; this has a problem with UK RASP. Disabled for now
 non_metric = 1
 use_paraglider = 0
-use_british = 1 ; this will set height in feet, speeds in knots and temperatures in Celcius -> must be set with non_metric = 1
-
+use_british = 1      ; this will set height in feet, speeds in knots and temperatures in Celcius -> must be set with non_metric = 1
+show_sfcwind = 1
+show_sun = 1
+show_cloudfrac = 1
+show_rain=1
+; -------------------------
 if (.not.isvar("DOMAIN")) then
    print_clock("Usage: meteogram.ncl DOMAIN=domainname SITEDATA=sitedata.ncl [ptop=nn] [rhcut = nn ] [show_[xxx]=[0|1]]")
    exit
@@ -168,8 +176,8 @@ end
 ;;;---------------------------------------------------------------------------------
 
 
-;operator = "blipmaps.nl"
-operator = "rasp.stratus.org.uk"
+
+operator = "rasp.stratus.org.uk"          ;operator = "blipmaps.nl"
 default_type = "png"
 default_ptop = 40                        ; usually 20, I changed for TS upper instability
 ;                                          Note! changing ptop modifies the y-axis and messes with plot positioning

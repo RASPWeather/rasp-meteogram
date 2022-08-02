@@ -1,5 +1,5 @@
 #!/bin/sh
-HOME_DIR=/home/rasp3/GM
+HOME_DIR=/home/rasp3/GM/rasp-meteogram
 
 # -n removes proceeding print statement (0) - enumeration
 # -P creates a profile file to see where it may be slow
@@ -7,8 +7,11 @@ HOME_DIR=/home/rasp3/GM
 
 if [ "$1" != "" ]; then
 	PLOT_DOMAIN=$1
+	export PLOT_DOMAIN=$1
+	export SITE_DATA=./sitedata.ncl
 	echo "Using region:$PLOT_DOMAIN"
-    export PLOT_DOMAIN=$1
+	echo "Using site data file:$SITE_DATA"
+
 	#Or use: /usr/bin/ncl -n -p 'DOMAIN="YOUR_DOMAIN"' $HOME_DIR/meteogram.ncl
 	/usr/bin/ncl -n -p $HOME_DIR/meteogram.ncl
 else

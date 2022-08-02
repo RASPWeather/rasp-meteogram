@@ -11,10 +11,13 @@
 ; Change History
 ; -----------------------------------------------------------------------------
 ; Document your changes and change the version number. BM stands for Blipmaps
-meteogram_version = "BM20220801"
+meteogram_version = "BM20220802"
 ;UK currently uses older version
 wrf_version = "3.7"
 
+; -----------------------------------------------------------------------------
+; Changes in BM20220802
+; fixed surface wind speed for knots as source was in knots already
 ; -----------------------------------------------------------------------------
 ; Changes in BM20220801
 ; Added 'use_british' units for celcius temps with feet AMSL
@@ -87,6 +90,8 @@ NCARG_ROOT=getenv("NCARG_ROOT")
 print_clock("Using NCARG_ROOT:" +NCARG_ROOT)
 DOMAIN=getenv("PLOT_DOMAIN")  
 print_clock("Using DOMAIN:" +DOMAIN)
+SITEDATA=getenv("SITE_DATA")
+print_clock("Using Site Data File:" +SITEDATA)
 
 ; -------------------------
 ; Options chosen:
@@ -94,7 +99,8 @@ show_pfd = 0         ; this has a problem with UK RASP. Disabled for now
 non_metric = 1
 use_paraglider = 0
 use_british = 1      ; this will set height in feet, speeds in knots and temperatures in Celcius -> must be set with non_metric = 1
-show_sfcwind = 1
+wind_in_kts = 1      ; set this to 1 if your soruce data is already in knots so wind speed at ground is not modified from kts to mph, etc
+show_sfcwind = 1     ; Note that surface wind speeds at height are :sfcwind0spd = 2m, sfcwindspd = 10m, sfcwind2spd = 30m
 show_sun = 1
 show_cloudfrac = 1
 show_rain=1
@@ -413,7 +419,6 @@ end if
 
 ; _____________________read site list__________________________________________________
 
-sitefile="/home/rasp3/GM/sitedata.ncl"
 if (isvar("SITEDATA"))
    sitefile = SITEDATA
 end if
@@ -1934,7 +1939,12 @@ end if
       sfcwind0spd = sfcwind0spd_multitime(:,locY,locX)*3.6  ;m/s to km/h
       if (non_metric.eq.1) then
          if (use_british.eq.1) then 
-            sfcwind0spd = sfcwind0spd_multitime(:,locY,locX)*1.943844 ;m/s to kts ... 1 m/s is 1.943844 kts
+            if (wind_in_kts.eq.1) then
+               ; already in knots from source data so do not modify
+               sfcwind0spd = sfcwind0spd_multitime(:,locY,locX)*1.0
+            else ; probably in m/s so convert
+               sfcwind0spd = sfcwind0spd_multitime(:,locY,locX)*1.943844 ;m/s to kts ... 1 m/s is 1.943844 kts
+            end if 
          else ; must be mph
             sfcwind0spd = sfcwind0spd_multitime(:,locY,locX)*2.23694 ;m/s to mph
          end if 
@@ -2401,7 +2411,7 @@ lokX = locX+1
    legend5= "~F21~~Z65Q~xxx/xx = winddirection/windspeed in km/h @ 2m AGL"
    if (non_metric.eq.1) then
       if (use_british.eq.1) then
-         legend5= "~F21~~Z65Q~xxx/xx = winddirection/windspeed in kts @ 7ft AGL"
+         legend5= "~F21~~Z65Q~xxx/xx = winddirection/windspeed in kts @ 2m AGL"
       else
          legend5= "~F21~~Z65Q~xxx/xx = winddirection/windspeed in mph @ 7ft AGL"
       end if

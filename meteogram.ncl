@@ -2363,7 +2363,8 @@ end if
 
 
    timestamp=systemfunc("date +%d' '%b' '%Y' at '%H:%M' '%Z")
-   timestamp="~F21~~Z65Q~Produced on "+timestamp+" - rasp.stratus.org.uk - WRF"+wrf_version+" - Meteogram: "+meteogram_version
+   host_name = systemfunc("/usr/bin/hostname -s")
+   timestamp="~F21~~Z65Q~Produced on "+timestamp+" - "+operator+" - WRF"+wrf_version+" - Meteogram: "+meteogram_version + " ("+host_name+")"
    timestampxNDC = .100     
    timestampyNDC = .010
 

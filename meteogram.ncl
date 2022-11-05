@@ -11,10 +11,13 @@
 ; Change History
 ; -----------------------------------------------------------------------------
 ; Document your changes and change the version number. BM stands for Blipmaps
-meteogram_version = "BM20220802"
+meteogram_version = "BM20221105"
 ;UK currently uses older version
 wrf_version = "3.7"
 
+; -----------------------------------------------------------------------------
+; Changes in BM20221105
+; Adjusted plotting end time so for GMT we can process up to 17:30 (previously works for models that have 19:00 onwards)
 ; -----------------------------------------------------------------------------
 ; Changes in BM20220802
 ; fixed surface wind speed for knots as source was in knots already
@@ -888,7 +891,8 @@ do i=0,dims(0)-1
    if ( lst_string(i).eq."09:00") then
       start_time_index = i - start_time_margin
    end if
-   if ( lst_string(i).eq."18:30") then
+   ; BM20221105 change from 18:30 to 17:30
+   if ( lst_string(i).eq."17:30") then
       stop_time_index = i + start_time_margin
    end if
 end do

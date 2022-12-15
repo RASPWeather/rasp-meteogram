@@ -3216,7 +3216,8 @@ end if
    ; deal with ncl png naming issue 5.1 5.2 goes away in 6.0.0. so only try if vnum < 6
 
    if ( type .eq. "png" )
-      cmd = "composite -geometry 150x45+10+5  /home/rasp3/Pictures/water-mark-logo.png " + windgram + ".png " +  windgram + ".png "
+      ; needs to be able to see the watermark logo PNG file
+      cmd = "composite -geometry 150x45+10+5  water-mark-logo.png " + windgram + ".png " +  windgram + ".png "
       print(cmd)
       system(cmd)   
    end if
